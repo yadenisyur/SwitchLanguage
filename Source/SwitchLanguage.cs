@@ -20,6 +20,7 @@ namespace SwitchLanguage
     public class SwitchLanguage : MonoBehaviour
     {
         private static SwitchLanguage instance;
+        private static PopupDialog menu;
         private static readonly string filePath = KSPUtil.ApplicationRootPath + "/GameData/SwitchLanguage/settings.cfg";
         //private static readonly string cachePath = KSPUtil.ApplicationRootPath + "/GameData/ModuleManager.ConfigCache";
 
@@ -71,10 +72,8 @@ namespace SwitchLanguage
             else
             {
                 Debug.Log("[SL] Could not find settings file! Please download SwitchLanguage again!");
-
-                PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), "SwitchLanguageMsg",
-                    "Switch Language", "Could not find settings file! Please download SwitchLanguage again!", "Ok",
-                    true, HighLogic.UISkin);
+                Dialog("SwitchLanguageMsg", "Switch Language",
+                    "Could not find settings file! Please download SwitchLanguage again!");
             }
             return language;
         }
@@ -95,5 +94,19 @@ namespace SwitchLanguage
         //    }
         //    return language;
         //}
+
+        private static void Dialog(string name, string title, string message)
+        {
+            if (menu == null)
+            {
+                menu = PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), name, title,
+                    message, "Ok", true, HighLogic.UISkin);
+            }
+            else
+            {
+                menu.Dismiss();
+                menu = null;
+            }
+        }
     }
 }

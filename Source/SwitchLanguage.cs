@@ -24,7 +24,7 @@ namespace SwitchLanguage
         private static readonly string filePath = KSPUtil.ApplicationRootPath + "/GameData/SwitchLanguage/settings.cfg";
         //private static readonly string cachePath = KSPUtil.ApplicationRootPath + "/GameData/ModuleManager.ConfigCache";
 
-        private void Awake()
+        private void Start()
         {
             DontDestroyOnLoad(this);
             Init();
@@ -71,9 +71,8 @@ namespace SwitchLanguage
             }
             else
             {
-                Debug.Log("[SL] Could not find settings file! Please download SwitchLanguage again!");
                 Dialog("SwitchLanguageMsg", "Switch Language",
-                    "Could not find settings file! Please download SwitchLanguage again!");
+                    $"Could not find settings file! Setting language to {Localization.instance.CurrentLanguage}.\n\rPlease download SwitchLanguage again!");
             }
             return language;
         }
@@ -97,6 +96,8 @@ namespace SwitchLanguage
 
         private static void Dialog(string name, string title, string message)
         {
+            Debug.Log($"[SL] {message}");
+
             if (menu == null)
             {
                 menu = PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), name, title,

@@ -25,7 +25,7 @@ To contribute to this mod, please read the contributing guidelines.
 * Olympic1 - Code
 
 ## Licensing
-Licensed under the terms of the MIT License.
+Licensed under the terms of the MIT License.  
 See https://opensource.org/licenses/MIT for full details.
 
 https://github.com/KSP-Localization/SwitchLanguage

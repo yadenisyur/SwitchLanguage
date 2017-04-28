@@ -25,9 +25,7 @@ To contribute to this mod, please read the contributing guidelines.
 * Olympic1 - Code
 
 ## Licensing
-Copyright © 2017, Arne Peirs. All rights reserved.
-
-Written by Arne Peirs (Olympic1) for use in Kerbal Space Program.  
-This project may not be used in any derivative work without permission.
+Licensed under the terms of the MIT License.
+See https://opensource.org/licenses/MIT for full details.
 
 https://github.com/KSP-Localization/SwitchLanguage

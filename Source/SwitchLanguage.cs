@@ -15,18 +15,15 @@ using UnityEngine;
 
 namespace SwitchLanguage
 {
-    //[KSPAddon(KSPAddon.Startup.PSystemSpawn, true)]
     [KSPAddon(KSPAddon.Startup.Instantly, true)]
     public class SwitchLanguage : MonoBehaviour
     {
         private static SwitchLanguage instance;
         private static PopupDialog menu;
         private static readonly string filePath = KSPUtil.ApplicationRootPath + "/GameData/SwitchLanguage/settings.cfg";
-        //private static readonly string cachePath = KSPUtil.ApplicationRootPath + "/GameData/ModuleManager.ConfigCache";
 
         private void Start()
         {
-            DontDestroyOnLoad(this);
             Init();
         }
 
@@ -38,25 +35,14 @@ namespace SwitchLanguage
 
             string languageFromFile = GetLanguageFromFile();
 
-            //// Is there a ModuleManager cache
-            //if (File.Exists(cachePath))
-            //{
-            //    string languageFromCache = GetLanguageFromCache();
-            //    if (languageFromFile != languageFromCache)
-            //    {
-            //        Debug.Log("[SL] Language was changed by Module Manager");
-            //        languageFromFile = languageFromCache;
-            //    }
-            //}
-
-            Debug.Log("[SL] Switching language to: " + languageFromFile);
-            Localization.instance.SwitchToLanguage(languageFromFile);
+            Debug.Log("[SL] Switching language to " + languageFromFile);
+            Localizer.SwitchToLanguage(languageFromFile);
             return instance;
         }
 
         private static string GetLanguageFromFile()
         {
-            string language = Localization.instance.CurrentLanguage;
+            string language = Localizer.CurrentLanguage;
             if (File.Exists(filePath))
             {
                 foreach (string readAllLine in File.ReadAllLines(filePath))
@@ -72,27 +58,10 @@ namespace SwitchLanguage
             else
             {
                 Dialog("SwitchLanguageMsg", "Switch Language",
-                    $"Could not find settings file! Setting language to {Localization.instance.CurrentLanguage}.\n\rPlease download SwitchLanguage again!");
+                    $"Could not find settings file! Setting language to {Localizer.CurrentLanguage}.\r\nPlease download SwitchLanguage again!");
             }
             return language;
         }
-
-        //private static string GetLanguageFromCache()
-        //{
-        //    string language = Localization.instance.CurrentLanguage;
-        //    foreach (ConfigNode node in ConfigNode.Load(cachePath).GetNodes("UrlConfig"))
-        //    {
-        //        if (node.GetValue("name").Contains("SwitchLanguage"))
-        //        {
-        //            if (node.HasNode("SwitchLanguage"))
-        //            {
-        //                ConfigNode settings = node.GetNode("SwitchLanguage");
-        //                language = settings.HasValue("language") ? settings.GetValue("language").Trim() : language;
-        //            }
-        //        }
-        //    }
-        //    return language;
-        //}
 
         private static void Dialog(string name, string title, string message)
         {

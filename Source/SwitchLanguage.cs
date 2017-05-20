@@ -20,8 +20,7 @@ namespace SwitchLanguage
     {
         private static SwitchLanguage instance;
         private static PopupDialog menu;
-        private static readonly string filePath = KSPUtil.ApplicationRootPath + "/GameData/SwitchLanguage/settings.cfg";
-        private const string downloadLink = "https://github.com/KSP-Localization/SwitchLanguage/releases/latest";
+        private static readonly string filePath = KSPUtil.ApplicationRootPath + "/GameData/SwitchLanguage/Settings.cfg";
 
         private void Start()
         {
@@ -59,7 +58,9 @@ namespace SwitchLanguage
             else
             {
                 Dialog("SwitchLanguageMsg", "Switch Language",
-                    $"Could not find settings file! Setting language to {Localizer.CurrentLanguage}.\r\nPlease download SwitchLanguage again!");
+                    $"Could not find the settings file, creating one...\r\nChange the language in the file and restart KSP.\r\n\r\nSetting language to {Localizer.CurrentLanguage}.");
+
+                CreateFile();
             }
             return language;
         }
@@ -70,16 +71,22 @@ namespace SwitchLanguage
 
             if (menu == null)
             {
-                menu = PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
-                    new MultiOptionDialog(name, message, title, HighLogic.UISkin,
-                        new DialogGUIButton("Download", delegate { Application.OpenURL(downloadLink); }),
-                        new DialogGUIButton("Close", () => { })), true, HighLogic.UISkin);
+                menu = PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), name, title,
+                    message, "Ok", true, HighLogic.UISkin);
             }
             else
             {
                 menu.Dismiss();
                 menu = null;
             }
+        }
+
+        private static void CreateFile()
+        {
+            ConfigNode settings = new ConfigNode();
+            ConfigNode node = settings.AddNode("SwitchLanguage");
+            node.AddValue("language", Localizer.CurrentLanguage);
+            settings.Save(filePath);
         }
     }
 }

@@ -21,6 +21,7 @@ namespace SwitchLanguage
         private static SwitchLanguage instance;
         private static PopupDialog menu;
         private static readonly string filePath = KSPUtil.ApplicationRootPath + "/GameData/SwitchLanguage/settings.cfg";
+        private const string downloadLink = "https://github.com/KSP-Localization/SwitchLanguage/releases/latest";
 
         private void Start()
         {
@@ -69,8 +70,10 @@ namespace SwitchLanguage
 
             if (menu == null)
             {
-                menu = PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), name, title,
-                    message, "Ok", true, HighLogic.UISkin);
+                menu = PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
+                    new MultiOptionDialog(name, message, title, HighLogic.UISkin,
+                        new DialogGUIButton("Download", delegate { Application.OpenURL(downloadLink); }),
+                        new DialogGUIButton("Close", () => { })), true, HighLogic.UISkin);
             }
             else
             {

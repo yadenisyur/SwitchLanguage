@@ -11,6 +11,7 @@
 
 using System.IO;
 using KSP.Localization;
+using TMPro;
 using UnityEngine;
 
 namespace SwitchLanguage
@@ -19,12 +20,29 @@ namespace SwitchLanguage
     public class SwitchLanguage : MonoBehaviour
     {
         private static SwitchLanguage instance;
+        private static ConfigNode config;
         private static PopupDialog menu;
-        private static readonly string filePath = KSPUtil.ApplicationRootPath + "/GameData/SwitchLanguage/Settings.cfg";
+        private static bool error;
+        private static readonly string filePath = $"{KSPUtil.ApplicationRootPath}GameData/SwitchLanguage/Settings.cfg";
 
-        private void Start()
+        public void Awake()
         {
-            Init();
+            if (File.Exists(filePath))
+            {
+                Init();
+            }
+            else
+            {
+                error = true;
+                CreateFile();
+            }
+        }
+
+        public void Start()
+        {
+            if (error)
+                Dialog("SwitchLanguageMsg", "Switch Language",
+                    $"Could not find the settings file, creating one...\r\nChange the language in the file and restart KSP.\r\n\r\nSetting language to {Localizer.CurrentLanguage}.");
         }
 
         private static SwitchLanguage Init()
@@ -33,41 +51,52 @@ namespace SwitchLanguage
                 return instance;
             instance = new SwitchLanguage();
 
-            string languageFromFile = GetLanguageFromFile();
+            if (config == null)
+                config = ConfigNode.Load(filePath).GetNode("SwitchLanguage");
 
-            Debug.Log("[SL] Switching language to " + languageFromFile);
-            Localizer.SwitchToLanguage(languageFromFile);
+            string language = GetLanguageFromFile();
+            bool useFont = bool.Parse(config.GetValue("useFont"));
+
+            if (useFont)
+            {
+                string fontName = config.GetValue("font");
+                FontLoader loader = FindObjectOfType<FontLoader>();
+                TMP_FontAsset font = loader.LoadedFonts.Find(t => t.name.Equals(fontName));
+                loader.AddGameSubFont(language, false, font);
+
+                Debug.Log($"[SwitchLanguage] Setting language to {language}");
+                Localizer.SwitchToLanguage(language);
+
+                Debug.Log($"[SwitchLanguage] Setting font to {fontName}");
+                loader.SwitchFontLanguage(language);
+            }
+            else
+            {
+                Debug.Log($"[SwitchLanguage] Setting language to {language}");
+                Localizer.SwitchToLanguage(language);
+            }
+
             return instance;
         }
 
         private static string GetLanguageFromFile()
         {
             string language = Localizer.CurrentLanguage;
-            if (File.Exists(filePath))
+            foreach (string readAllLine in File.ReadAllLines(filePath))
             {
-                foreach (string readAllLine in File.ReadAllLines(filePath))
+                if (readAllLine.Contains("language") && readAllLine.Contains("="))
                 {
-                    if (readAllLine.Contains("language") && readAllLine.Contains("="))
-                    {
-                        string[] strArray = readAllLine.Split('=');
-                        if (strArray.Length == 2)
-                            language = strArray[1].Trim();
-                    }
+                    string[] strArray = readAllLine.Split('=');
+                    if (strArray.Length == 2)
+                        language = strArray[1].Trim();
                 }
-            }
-            else
-            {
-                Dialog("SwitchLanguageMsg", "Switch Language",
-                    $"Could not find the settings file, creating one...\r\nChange the language in the file and restart KSP.\r\n\r\nSetting language to {Localizer.CurrentLanguage}.");
-
-                CreateFile();
             }
             return language;
         }
 
         private static void Dialog(string name, string title, string message)
         {
-            Debug.Log($"[SL] {message}");
+            Debug.Log($"[SwitchLanguage] {message}");
 
             if (menu == null)
             {
@@ -86,6 +115,8 @@ namespace SwitchLanguage
             ConfigNode settings = new ConfigNode();
             ConfigNode node = settings.AddNode("SwitchLanguage");
             node.AddValue("language", Localizer.CurrentLanguage);
+            node.AddValue("useFont", false);
+            node.AddValue("font", string.Empty);
             settings.Save(filePath);
         }
     }

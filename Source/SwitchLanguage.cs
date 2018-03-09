@@ -1,6 +1,6 @@
 ﻿/*
  * Switch Language
- * Copyright © 2017, Arne Peirs (Olympic1)
+ * Copyright © 2017-2018, Arne Peirs (Olympic1)
  * 
  * Kerbal Space Program is Copyright © 2011-2017 Squad. See http://kerbalspaceprogram.com/.
  * This project is in no way associated with nor endorsed by Squad.
@@ -49,6 +49,7 @@ namespace SwitchLanguage
         {
             if (instance != null)
                 return instance;
+
             instance = new SwitchLanguage();
 
             if (config == null)

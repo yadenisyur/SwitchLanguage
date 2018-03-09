@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Community Localization Project")]
 [assembly: AssemblyProduct("SwitchLanguage")]
-[assembly: AssemblyCopyright("Copyright © Olympic1 2017")]
+[assembly: AssemblyCopyright("Copyright © Olympic1 2017-2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
